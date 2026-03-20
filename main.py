@@ -4,12 +4,8 @@ import httpx
 import os
 import requests
 
-with open(".env") as f:
-    for line in f:
-        line = line.strip()
-        if "=" in line:
-            key, val = line.split("=", 1)
-            os.environ[key] = val
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 
