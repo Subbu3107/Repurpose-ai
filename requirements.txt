@@ -1,0 +1,5 @@
+flask
+httpx
+requests
+gunicorn
+python-dotenv
