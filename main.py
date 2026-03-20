@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask import render_template
 import httpx
 import os
 import requests
@@ -67,14 +68,15 @@ PLATFORM_RULES = {
 
 # ---- Routes ----
 @app.route("/")
-def root():
-    return jsonify({"status": "Repurpose AI is running 🚀"})
+def home():
+    return render_template("index.html")
 
 @app.route("/voice", methods=["POST"])
 def create_voice():
     data = request.json
     profile = build_voice_profile(data.get("samples", []))
     return jsonify({"voice_profile": profile})
+
 
 @app.route("/repurpose", methods=["POST"])
 def repurpose_content():
