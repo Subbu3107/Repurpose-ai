@@ -22,16 +22,8 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    header p {
-      color: #888;
-      margin-top: 8px;
-      font-size: 1rem;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+    header p { color: #888; margin-top: 8px; font-size: 1rem; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
     .card {
       background: #1a1a1a;
       border-radius: 16px;
@@ -39,12 +31,7 @@
       margin-bottom: 20px;
       border: 1px solid #2a2a2a;
     }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #aaa;
-      font-size: 0.9rem;
-    }
+    label { display: block; margin-bottom: 8px; color: #aaa; font-size: 0.9rem; }
     textarea {
       width: 100%;
       background: #111;
@@ -57,12 +44,7 @@
       outline: none;
     }
     textarea:focus { border-color: #a855f7; }
-    .platforms {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 8px;
-    }
+    .platforms { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
     .platform-btn {
       padding: 8px 16px;
       border-radius: 20px;
@@ -93,6 +75,36 @@
     }
     .btn:hover { opacity: 0.9; }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-hook {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: opacity 0.2s;
+    }
+    .btn-hook:hover { opacity: 0.9; }
+    .btn-hook:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-score {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(90deg, #10b981, #3b82f6);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: opacity 0.2s;
+    }
+    .btn-score:hover { opacity: 0.9; }
+    .btn-score:disabled { opacity: 0.5; cursor: not-allowed; }
     .output-card {
       background: #1a1a1a;
       border-radius: 12px;
@@ -124,12 +136,63 @@
       font-size: 0.8rem;
     }
     .copy-btn:hover { border-color: #a855f7; color: #fff; }
-    #status {
-      text-align: center;
-      color: #a855f7;
-      margin: 10px 0;
-      font-size: 0.9rem;
+    .hook-item {
+      margin-bottom: 12px;
+      padding: 12px;
+      background: #111;
+      border-radius: 8px;
+      border-left: 3px solid #f59e0b;
     }
+    .hook-type {
+      color: #f59e0b;
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    .hook-text { color: #fff; font-size: 0.95rem; line-height: 1.5; }
+    .score-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .score-label { color: #aaa; font-size: 0.9rem; }
+    .score-value { font-weight: bold; font-size: 1rem; }
+    .score-bar {
+      width: 100%;
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+      margin-top: 4px;
+    }
+    .score-fill {
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #a855f7, #ec4899);
+    }
+    .tone-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .tone-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #333;
+      background: #111;
+      color: #aaa;
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+    .tone-btn.selected {
+      border-color: #10b981;
+      background: #052e16;
+      color: #fff;
+    }
+    #status { text-align: center; color: #a855f7; margin: 10px 0; font-size: 0.9rem; }
     #results { margin-top: 10px; }
   </style>
 </head>
@@ -153,6 +216,17 @@
   </div>
 
   <div class="card">
+    <label>Tone</label>
+    <div class="tone-btns">
+      <button class="tone-btn selected" onclick="selectTone(this)" data-value="viral">🔥 Viral</button>
+      <button class="tone-btn" onclick="selectTone(this)" data-value="professional">💼 Professional</button>
+      <button class="tone-btn" onclick="selectTone(this)" data-value="funny">😂 Funny</button>
+      <button class="tone-btn" onclick="selectTone(this)" data-value="educational">📚 Educational</button>
+      <button class="tone-btn" onclick="selectTone(this)" data-value="motivational">💪 Motivational</button>
+    </div>
+  </div>
+
+  <div class="card">
     <label>Select Platforms</label>
     <div class="platforms">
       <button class="platform-btn selected" onclick="toggle(this)" data-value="twitter">𝕏 Twitter</button>
@@ -162,6 +236,14 @@
       <button class="platform-btn" onclick="toggle(this)" data-value="youtube_shorts">YT Shorts</button>
     </div>
   </div>
+
+  <button class="btn-score" onclick="scoreContent()" id="scoreBtn">
+    📊 Score My Content
+  </button>
+
+  <button class="btn-hook" onclick="getHooks()" id="hookBtn">
+    ⚡ Generate 5 Hooks
+  </button>
 
   <button class="btn" onclick="repurpose()" id="mainBtn">
     ✦ Repurpose My Content
@@ -173,33 +255,118 @@
 </div>
 
 <script>
-  function toggle(btn) {
-    btn.classList.toggle('selected');
+  function toggle(btn) { btn.classList.toggle('selected'); }
+
+  function selectTone(btn) {
+    document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  async function scoreContent() {
+    const content = document.getElementById('content').value.trim();
+    const btn = document.getElementById('scoreBtn');
+    const status = document.getElementById('status');
+    const results = document.getElementById('results');
+
+    if (!content) { status.textContent = '⚠️ Enter your content first'; return; }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Scoring...';
+    status.textContent = 'Analyzing your content...';
+
+    try {
+      const res = await fetch('/score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+      const data = await res.json();
+      const s = data.score;
+      status.textContent = '✅ Content scored!';
+
+      results.innerHTML = `
+        <div class="output-card">
+          <h3>📊 Content Score</h3>
+          ${scoreRow('Hook Strength', s.hook)}
+          ${scoreRow('Engagement Potential', s.engagement)}
+          ${scoreRow('Viral Probability', s.viral)}
+          ${scoreRow('Clarity', s.clarity)}
+          <div style="margin-top:16px; padding:12px; background:#111; border-radius:8px">
+            <div style="color:#a855f7; font-size:0.8rem; margin-bottom:6px">💡 SUGGESTIONS</div>
+            <div style="color:#ddd; font-size:0.9rem">${s.suggestions}</div>
+          </div>
+        </div>`;
+    } catch(err) { status.textContent = '❌ Error. Try again.'; }
+
+    btn.disabled = false;
+    btn.textContent = '📊 Score My Content';
+  }
+
+  function scoreRow(label, value) {
+    const color = value >= 8 ? '#10b981' : value >= 6 ? '#f59e0b' : '#ef4444';
+    return `
+      <div class="score-item">
+        <div>
+          <div class="score-label">${label}</div>
+          <div class="score-bar"><div class="score-fill" style="width:${value*10}%; background:${color}"></div></div>
+        </div>
+        <div class="score-value" style="color:${color}">${value}/10</div>
+      </div>`;
+  }
+
+  async function getHooks() {
+    const content = document.getElementById('content').value.trim();
+    const btn = document.getElementById('hookBtn');
+    const status = document.getElementById('status');
+    const results = document.getElementById('results');
+
+    if (!content) { status.textContent = '⚠️ Enter your content first'; return; }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Generating hooks...';
+    status.textContent = 'AI is crafting your hooks...';
+
+    try {
+      const res = await fetch('/hooks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+      const data = await res.json();
+      status.textContent = '✅ Here are your 5 hooks!';
+
+      let html = '<div class="output-card"><h3>⚡ 5 Hooks</h3>';
+      for (const [type, hook] of Object.entries(data.hooks)) {
+        html += `
+          <div class="hook-item">
+            <div class="hook-type">${type}</div>
+            <div class="hook-text">${hook}</div>
+          </div>`;
+      }
+      html += '</div>';
+      results.innerHTML = html;
+    } catch(err) { status.textContent = '❌ Error. Try again.'; }
+
+    btn.disabled = false;
+    btn.textContent = '⚡ Generate 5 Hooks';
   }
 
   async function repurpose() {
     const content = document.getElementById('content').value.trim();
     const voiceText = document.getElementById('voice').value.trim();
+    const tone = document.querySelector('.tone-btn.selected')?.dataset.value || 'viral';
     const btn = document.getElementById('mainBtn');
     const status = document.getElementById('status');
     const results = document.getElementById('results');
 
-    if (!content) {
-      status.textContent = '⚠️ Please enter your content first';
-      return;
-    }
+    if (!content) { status.textContent = '⚠️ Please enter your content first'; return; }
 
     const platforms = [...document.querySelectorAll('.platform-btn.selected')]
       .map(b => b.dataset.value);
 
-    if (platforms.length === 0) {
-      status.textContent = '⚠️ Please select at least one platform';
-      return;
-    }
+    if (platforms.length === 0) { status.textContent = '⚠️ Select at least one platform'; return; }
 
-    const voice_samples = voiceText
-      ? voiceText.split('\n').filter(l => l.trim())
-      : [];
+    const voice_samples = voiceText ? voiceText.split('\n').filter(l => l.trim()) : [];
 
     btn.disabled = true;
     btn.textContent = '⏳ Repurposing...';
@@ -210,9 +377,8 @@
       const res = await fetch('/repurpose', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, platforms, voice_samples })
+        body: JSON.stringify({ content, platforms, voice_samples, tone })
       });
-
       const data = await res.json();
       status.textContent = '✅ Done!';
       results.innerHTML = '';
@@ -225,9 +391,7 @@
             <button class="copy-btn" onclick="copy('${platform}')">Copy</button>
           </div>`;
       }
-    } catch (err) {
-      status.textContent = '❌ Error. Is the server running?';
-    }
+    } catch (err) { status.textContent = '❌ Error. Is the server running?'; }
 
     btn.disabled = false;
     btn.textContent = '✦ Repurpose My Content';

@@ -73,6 +73,70 @@ def create_voice():
     profile = build_voice_profile(data.get("samples", []))
     return jsonify({"voice_profile": profile})
 
+@app.route("/score", methods=["POST"])
+def score_content():
+    data = request.json
+    content = data.get("content", "")
+    prompt = f"""
+Analyze this content and score it out of 10 for each:
+1. Hook strength (how grabbing is the opening)
+2. Engagement potential (will people interact)
+3. Viral probability (will people share)
+4. Clarity (is it easy to understand)
+
+Also give 2 short suggestions to improve it.
+
+Content: {content}
+
+Respond ONLY in this exact JSON format:
+{{"hook": 7, "engagement": 8, "viral": 6, "clarity": 9, "suggestions": "your suggestions here"}}
+"""
+    result = call_groq(prompt)
+    try:
+        import json
+        clean = result.strip().replace("```json","").replace("```","")
+        score = json.loads(clean)
+    except:
+        score = {{"hook":7,"engagement":7,"viral":6,"clarity":8,"suggestions":"Add a stronger opening hook and use more specific numbers."}}
+    return jsonify({"score": score})
+
+@app.route("/hooks", methods=["POST"])
+def generate_hooks():
+    data = request.json
+    content = data.get("content", "")
+    
+    if not content:
+        return jsonify({"error": "content is required"}), 400
+
+    prompt = f"""
+Generate 5 different hooks for this content. Each hook is an opening line that grabs attention.
+
+Content: {content}
+
+Generate exactly these 5 types:
+1. CURIOSITY: Makes reader curious
+2. CONTROVERSY: Bold/surprising take  
+3. STORY: Opens with a scene
+4. DATA: Starts with a number/stat
+5. QUESTION: Thought provoking question
+
+Format exactly like this:
+CURIOSITY: [hook]
+CONTROVERSY: [hook]
+STORY: [hook]
+DATA: [hook]
+QUESTION: [hook]
+"""
+    result = call_groq(prompt)
+    
+    # Parse into clean dict
+    hooks = {}
+    for line in result.strip().split("\n"):
+        if ":" in line:
+            key, val = line.split(":", 1)
+            hooks[key.strip()] = val.strip()
+    
+    return jsonify({"hooks": hooks})
 
 @app.route("/repurpose", methods=["POST"])
 def repurpose_content():
