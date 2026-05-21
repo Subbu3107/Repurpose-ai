@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
-from flask import render_template
+from flask import Flask, request, jsonify, render_template
 import httpx
 import os
+import json
 import requests
-
 from dotenv import load_dotenv
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -38,7 +38,7 @@ def call_groq(prompt):
             "messages": [{"role": "user", "content": prompt}],
             "max_tokens": 1000
         },
-        timeout=30
+        timeout=60
     )
     return response.json()["choices"][0]["message"]["content"]
 
@@ -93,29 +93,26 @@ Respond ONLY in this exact JSON format:
 """
     result = call_groq(prompt)
     try:
-        import json
         clean = result.strip().replace("```json","").replace("```","")
         score = json.loads(clean)
     except:
-        score = {{"hook":7,"engagement":7,"viral":6,"clarity":8,"suggestions":"Add a stronger opening hook and use more specific numbers."}}
+        score = {"hook":7,"engagement":7,"viral":6,"clarity":8,"suggestions":"Add a stronger opening hook and use more specific numbers."}
     return jsonify({"score": score})
 
 @app.route("/hooks", methods=["POST"])
 def generate_hooks():
     data = request.json
     content = data.get("content", "")
-    
     if not content:
         return jsonify({"error": "content is required"}), 400
-
     prompt = f"""
-Generate 5 different hooks for this content. Each hook is an opening line that grabs attention.
+Generate 5 different hooks for this content.
 
 Content: {content}
 
 Generate exactly these 5 types:
 1. CURIOSITY: Makes reader curious
-2. CONTROVERSY: Bold/surprising take  
+2. CONTROVERSY: Bold/surprising take
 3. STORY: Opens with a scene
 4. DATA: Starts with a number/stat
 5. QUESTION: Thought provoking question
@@ -128,15 +125,166 @@ DATA: [hook]
 QUESTION: [hook]
 """
     result = call_groq(prompt)
-    
-    # Parse into clean dict
     hooks = {}
     for line in result.strip().split("\n"):
         if ":" in line:
             key, val = line.split(":", 1)
             hooks[key.strip()] = val.strip()
-    
     return jsonify({"hooks": hooks})
+
+@app.route("/analyze", methods=["POST"])
+def analyze_viral():
+    data = request.json
+    url = data.get("url", "")
+    if not url:
+        return jsonify({"error": "URL required"}), 400
+    try:
+        content_data = {}
+
+        # ---- YouTube ----
+        if "youtube.com" in url or "youtu.be" in url:
+            import yt_dlp
+            ydl_opts = {'quiet': True, 'skip_download': True}
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+                content_data = {
+                    "platform": "YouTube",
+                    "title": info.get("title", ""),
+                    "description": info.get("description", "")[:500],
+                    "tags": info.get("tags", [])[:10],
+                    "views": info.get("view_count", 0),
+                    "likes": info.get("like_count", 0),
+                    "duration": info.get("duration", 0),
+                    "channel": info.get("uploader", "")
+                }
+
+        # ---- Instagram ----
+        elif "instagram.com" in url:
+            from bs4 import BeautifulSoup
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+            r = requests.get(url, headers=headers, timeout=10)
+            soup = BeautifulSoup(r.text, "html.parser")
+            title = ""
+            description = ""
+            for tag in soup.find_all("meta"):
+                if tag.get("property") == "og:title":
+                    title = tag.get("content", "")
+                if tag.get("property") == "og:description":
+                    description = tag.get("content", "")
+            content_data = {
+                "platform": "Instagram",
+                "title": title,
+                "description": description,
+                "url": url
+            }
+        else:
+            return jsonify({"error": "Only YouTube and Instagram URLs supported"}), 400
+
+        platform = content_data.get("platform")
+        title = content_data.get("title", "")
+        description = content_data.get("description", "")
+        views = content_data.get("views", "unknown")
+        likes = content_data.get("likes", "unknown")
+        tags = content_data.get("tags", [])
+
+        prompt = f"""
+You are a viral content expert. Analyze this {platform} content.
+
+Platform: {platform}
+Title/Caption: {title}
+Description: {description}
+Views: {views}
+Likes: {likes}
+Tags: {tags}
+
+Respond ONLY in this exact JSON format:
+{{
+  "viral_score": 72,
+  "verdict": "Good content but weak hook is limiting reach",
+  "whats_working": ["point 1", "point 2", "point 3"],
+  "killing_reach": ["problem 1", "problem 2", "problem 3"],
+  "rewritten_title": "viral version of the title",
+  "rewritten_caption": "viral version of caption in 3 lines",
+  "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"],
+  "best_time": {{
+    "day": "Tuesday",
+    "time": "7PM IST",
+    "reason": "highest engagement window for Indian creators"
+  }},
+  "viral_tips": ["tip 1", "tip 2", "tip 3"]
+}}
+"""
+        result = call_groq(prompt)
+        clean = result.strip().replace("```json","").replace("```","").strip()
+        analysis = json.loads(clean)
+
+        return jsonify({
+            "platform": platform,
+            "original": content_data,
+            "analysis": analysis
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/youtube", methods=["POST"])
+def youtube_repurpose():
+    data = request.json
+    url = data.get("url", "")
+    platforms = data.get("platforms", ["twitter", "linkedin"])
+    voice_samples = data.get("voice_samples", [])
+    if not url:
+        return jsonify({"error": "YouTube URL required"}), 400
+    try:
+        import yt_dlp
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ydl_opts = {
+                'format': 'bestaudio/best',
+                'outtmpl': f'{tmpdir}/audio.%(ext)s',
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                }],
+                'quiet': True
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=True)
+                title = info.get('title', 'Video')
+                duration = info.get('duration', 0)
+            if duration > 1800:
+                return jsonify({"error": "Video too long. Max 30 minutes."}), 400
+            audio_path = f'{tmpdir}/audio.mp3'
+            with open(audio_path, "rb") as f:
+                transcript_response = httpx.post(
+                    "https://api.groq.com/openai/v1/audio/transcriptions",
+                    headers={"Authorization": f"Bearer {os.environ['GROQ_API_KEY']}"},
+                    files={"file": ("audio.mp3", f, "audio/mpeg")},
+                    data={"model": "whisper-large-v3"},
+                    timeout=120
+                )
+            transcript = transcript_response.json().get("text", "")
+            if not transcript:
+                return jsonify({"error": "Could not transcribe video"}), 400
+            voice = build_voice_profile(voice_samples)
+            outputs = {}
+            for platform in platforms:
+                if platform in PLATFORM_RULES:
+                    outputs[platform] = call_groq(f"""
+Repurpose this video transcript for {platform}.
+Voice guide: {voice}
+Format: {PLATFORM_RULES[platform]}
+Transcript: {transcript[:3000]}
+Output only the final content.
+""")
+            return jsonify({
+                "title": title,
+                "transcript": transcript[:500] + "...",
+                "voice_profile": voice,
+                "outputs": outputs
+            })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/repurpose", methods=["POST"])
 def repurpose_content():
@@ -145,28 +293,24 @@ def repurpose_content():
     platforms = data.get("platforms", [])
     voice_samples = data.get("voice_samples", [])
     email = data.get("email", "anonymous")
-
+    tone = data.get("tone", "viral")
     if not content:
         return jsonify({"error": "content is required"}), 400
-
     voice = build_voice_profile(voice_samples)
     outputs = {}
-
     for platform in platforms:
         if platform not in PLATFORM_RULES:
             outputs[platform] = "Platform not supported"
         else:
             outputs[platform] = call_groq(f"""
 Repurpose this content for {platform}.
+Tone: {tone}
 Voice guide: {voice}
 Format: {PLATFORM_RULES[platform]}
 Content: {content}
 Output only the final content.
 """)
-
-    # Save to Supabase
     save_job(email, content, voice, outputs)
-
     return jsonify({"voice_profile": voice, "outputs": outputs})
 
 if __name__ == "__main__":

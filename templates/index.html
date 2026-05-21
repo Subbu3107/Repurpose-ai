@@ -6,194 +6,54 @@
   <title>RepurposeAI</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #0f0f0f;
-      color: #fff;
-      min-height: 100vh;
-    }
-    header {
-      text-align: center;
-      padding: 40px 20px 20px;
-    }
-    header h1 {
-      font-size: 2.5rem;
-      background: linear-gradient(90deg, #a855f7, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f0f0f; color: #fff; min-height: 100vh; }
+    header { text-align: center; padding: 40px 20px 20px; }
+    header h1 { font-size: 2.5rem; background: linear-gradient(90deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     header p { color: #888; margin-top: 8px; font-size: 1rem; }
     .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-    .card {
-      background: #1a1a1a;
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 20px;
-      border: 1px solid #2a2a2a;
-    }
+    .card { background: #1a1a1a; border-radius: 16px; padding: 24px; margin-bottom: 20px; border: 1px solid #2a2a2a; }
     label { display: block; margin-bottom: 8px; color: #aaa; font-size: 0.9rem; }
-    textarea {
-      width: 100%;
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 10px;
-      color: #fff;
-      padding: 14px;
-      font-size: 0.95rem;
-      resize: vertical;
-      outline: none;
-    }
+    textarea { width: 100%; background: #111; border: 1px solid #333; border-radius: 10px; color: #fff; padding: 14px; font-size: 0.95rem; resize: vertical; outline: none; }
     textarea:focus { border-color: #a855f7; }
+    input[type="text"] { width: 100%; background: #111; border: 1px solid #333; border-radius: 10px; color: #fff; padding: 14px; font-size: 0.95rem; outline: none; margin-bottom: 10px; }
+    input[type="text"]:focus { border-color: #a855f7; }
     .platforms { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-    .platform-btn {
-      padding: 8px 16px;
-      border-radius: 20px;
-      border: 1px solid #333;
-      background: #111;
-      color: #aaa;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-    .platform-btn.selected {
-      border-color: #a855f7;
-      background: #2d1b4e;
-      color: #fff;
-    }
-    .btn {
-      width: 100%;
-      padding: 16px;
-      border-radius: 12px;
-      border: none;
-      background: linear-gradient(90deg, #a855f7, #ec4899);
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: opacity 0.2s;
-    }
+    .platform-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid #333; background: #111; color: #aaa; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+    .platform-btn.selected { border-color: #a855f7; background: #2d1b4e; color: #fff; }
+    .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; background: linear-gradient(90deg, #a855f7, #ec4899); color: #fff; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; }
     .btn:hover { opacity: 0.9; }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-hook {
-      width: 100%;
-      padding: 16px;
-      border-radius: 12px;
-      border: none;
-      background: linear-gradient(90deg, #f59e0b, #ef4444);
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: opacity 0.2s;
-    }
+    .btn-hook { width: 100%; padding: 16px; border-radius: 12px; border: none; background: linear-gradient(90deg, #f59e0b, #ef4444); color: #fff; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; }
     .btn-hook:hover { opacity: 0.9; }
     .btn-hook:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-score {
-      width: 100%;
-      padding: 16px;
-      border-radius: 12px;
-      border: none;
-      background: linear-gradient(90deg, #10b981, #3b82f6);
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: opacity 0.2s;
-    }
+    .btn-score { width: 100%; padding: 16px; border-radius: 12px; border: none; background: linear-gradient(90deg, #10b981, #3b82f6); color: #fff; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; }
     .btn-score:hover { opacity: 0.9; }
     .btn-score:disabled { opacity: 0.5; cursor: not-allowed; }
-    .output-card {
-      background: #1a1a1a;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 16px;
-      border: 1px solid #2a2a2a;
-    }
-    .output-card h3 {
-      color: #a855f7;
-      margin-bottom: 12px;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .output-card p {
-      color: #ddd;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      font-size: 0.95rem;
-    }
-    .copy-btn {
-      margin-top: 10px;
-      padding: 6px 14px;
-      border-radius: 8px;
-      border: 1px solid #333;
-      background: transparent;
-      color: #aaa;
-      cursor: pointer;
-      font-size: 0.8rem;
-    }
+    .btn-viral { width: 100%; padding: 16px; border-radius: 12px; border: none; background: linear-gradient(90deg, #10b981, #059669); color: #fff; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; }
+    .btn-viral:hover { opacity: 0.9; }
+    .btn-viral:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-yt { width: 100%; padding: 16px; border-radius: 12px; border: none; background: linear-gradient(90deg, #ef4444, #b91c1c); color: #fff; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; }
+    .btn-yt:hover { opacity: 0.9; }
+    .btn-yt:disabled { opacity: 0.5; cursor: not-allowed; }
+    .output-card { background: #1a1a1a; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #2a2a2a; }
+    .output-card h3 { color: #a855f7; margin-bottom: 12px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+    .output-card p { color: #ddd; line-height: 1.7; white-space: pre-wrap; font-size: 0.95rem; }
+    .copy-btn { margin-top: 10px; padding: 6px 14px; border-radius: 8px; border: 1px solid #333; background: transparent; color: #aaa; cursor: pointer; font-size: 0.8rem; }
     .copy-btn:hover { border-color: #a855f7; color: #fff; }
-    .hook-item {
-      margin-bottom: 12px;
-      padding: 12px;
-      background: #111;
-      border-radius: 8px;
-      border-left: 3px solid #f59e0b;
-    }
-    .hook-type {
-      color: #f59e0b;
-      font-size: 0.75rem;
-      font-weight: bold;
-      margin-bottom: 6px;
-      letter-spacing: 1px;
-    }
+    .hook-item { margin-bottom: 12px; padding: 12px; background: #111; border-radius: 8px; border-left: 3px solid #f59e0b; }
+    .hook-type { color: #f59e0b; font-size: 0.75rem; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px; }
     .hook-text { color: #fff; font-size: 0.95rem; line-height: 1.5; }
-    .score-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid #2a2a2a;
-    }
+    .score-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #2a2a2a; }
     .score-label { color: #aaa; font-size: 0.9rem; }
     .score-value { font-weight: bold; font-size: 1rem; }
-    .score-bar {
-      width: 100%;
-      height: 6px;
-      background: #333;
-      border-radius: 3px;
-      margin-top: 4px;
-    }
-    .score-fill {
-      height: 6px;
-      border-radius: 3px;
-      background: linear-gradient(90deg, #a855f7, #ec4899);
-    }
-    .tone-btns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .tone-btn {
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1px solid #333;
-      background: #111;
-      color: #aaa;
-      cursor: pointer;
-      font-size: 0.82rem;
-    }
-    .tone-btn.selected {
-      border-color: #10b981;
-      background: #052e16;
-      color: #fff;
-    }
+    .score-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-top: 4px; }
+    .score-fill { height: 6px; border-radius: 3px; background: linear-gradient(90deg, #a855f7, #ec4899); }
+    .tone-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .tone-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid #333; background: #111; color: #aaa; cursor: pointer; font-size: 0.82rem; }
+    .tone-btn.selected { border-color: #10b981; background: #052e16; color: #fff; }
     #status { text-align: center; color: #a855f7; margin: 10px 0; font-size: 0.9rem; }
     #results { margin-top: 10px; }
+    .divider { text-align: center; color: #444; margin: 20px 0; font-size: 0.85rem; letter-spacing: 2px; }
   </style>
 </head>
 <body>
@@ -205,16 +65,53 @@
 
 <div class="container">
 
-  <div class="card">
-    <label>Your Content (paste blog, video transcript, or idea)</label>
-    <textarea id="content" rows="6" placeholder="e.g. I woke up at 5am for 30 days straight..."></textarea>
+  <!-- VIRAL ANALYZER -->
+  <div class="card" style="border-color:#10b981">
+    <label style="color:#10b981; font-size:1rem; font-weight:bold">
+      🔥 Viral Analyzer — Make Any Content Go Viral
+    </label>
+    <p style="color:#666; font-size:0.85rem; margin-bottom:12px">
+      Paste a YouTube or Instagram URL → AI analyzes and tells you exactly how to make it viral
+    </p>
+    <input type="text" id="analyzeurl"
+      placeholder="https://youtube.com/watch?v=... or https://instagram.com/p/..."/>
+    <button class="btn-viral" onclick="analyzeViral()" id="analyzeBtn">
+      🔥 Analyze & Make It Viral
+    </button>
   </div>
 
-  <div class="card">
-    <label>Your Writing Style (paste 2-3 of your past posts so AI learns your voice)</label>
-    <textarea id="voice" rows="4" placeholder="e.g. shipped it. its ugly. i love it.&#10;stop waiting to feel ready."></textarea>
+  <!-- YOUTUBE REPURPOSE -->
+  <div class="card" style="border-color:#ef4444">
+    <label style="color:#ef4444; font-size:1rem; font-weight:bold">
+      🎥 YouTube → Auto Repurpose
+    </label>
+    <p style="color:#666; font-size:0.85rem; margin-bottom:12px">
+      Paste YouTube URL → AI transcribes and repurposes into all platforms
+    </p>
+    <input type="text" id="yturl"
+      placeholder="https://youtube.com/watch?v=..."/>
+    <button class="btn-yt" onclick="youtubeRepurpose()" id="ytBtn">
+      🎥 Transcribe & Repurpose
+    </button>
   </div>
 
+  <div class="divider">— OR PASTE YOUR OWN CONTENT —</div>
+
+  <!-- CONTENT INPUT -->
+  <div class="card">
+    <label>Your Content (paste blog, transcript, or idea)</label>
+    <textarea id="content" rows="6"
+      placeholder="e.g. I woke up at 5am for 30 days straight..."></textarea>
+  </div>
+
+  <!-- VOICE -->
+  <div class="card">
+    <label>Your Writing Style (paste 2-3 past posts so AI learns your voice)</label>
+    <textarea id="voice" rows="4"
+      placeholder="e.g. shipped it. its ugly. i love it.&#10;stop waiting to feel ready."></textarea>
+  </div>
+
+  <!-- TONE -->
   <div class="card">
     <label>Tone</label>
     <div class="tone-btns">
@@ -226,6 +123,7 @@
     </div>
   </div>
 
+  <!-- PLATFORMS -->
   <div class="card">
     <label>Select Platforms</label>
     <div class="platforms">
@@ -256,24 +154,150 @@
 
 <script>
   function toggle(btn) { btn.classList.toggle('selected'); }
-
   function selectTone(btn) {
     document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
   }
 
+  // ---- VIRAL ANALYZER ----
+  async function analyzeViral() {
+    const url = document.getElementById('analyzeurl').value.trim();
+    const btn = document.getElementById('analyzeBtn');
+    const status = document.getElementById('status');
+    const results = document.getElementById('results');
+    if (!url) { status.textContent = '⚠️ Enter a YouTube or Instagram URL'; return; }
+    btn.disabled = true;
+    btn.textContent = '⏳ Analyzing... (30 secs)';
+    status.textContent = '🔍 AI is analyzing your content...';
+    results.innerHTML = '';
+    try {
+      const res = await fetch('/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+      if (data.error) { status.textContent = '❌ ' + data.error; btn.disabled = false; btn.textContent = '🔥 Analyze & Make It Viral'; return; }
+      const a = data.analysis;
+      const scoreColor = a.viral_score >= 70 ? '#10b981' : a.viral_score >= 40 ? '#f59e0b' : '#ef4444';
+      status.textContent = '✅ Analysis complete!';
+      results.innerHTML = `
+        <div class="output-card" style="border-color:${scoreColor}">
+          <h3>🔥 Viral Score</h3>
+          <div style="text-align:center; padding:20px">
+            <div style="font-size:4rem; font-weight:bold; color:${scoreColor}">${a.viral_score}</div>
+            <div style="color:#aaa; font-size:0.9rem">out of 100</div>
+            <div style="margin-top:10px; color:#fff">${a.verdict}</div>
+          </div>
+          <div class="score-bar"><div class="score-fill" style="width:${a.viral_score}%; background:${scoreColor}"></div></div>
+        </div>
+        <div class="output-card">
+          <h3>✅ What's Working</h3>
+          ${a.whats_working.map(p => `<div style="padding:8px 0; border-bottom:1px solid #2a2a2a; color:#10b981">✓ ${p}</div>`).join('')}
+        </div>
+        <div class="output-card">
+          <h3>❌ What's Killing Your Reach</h3>
+          ${a.killing_reach.map(p => `<div style="padding:8px 0; border-bottom:1px solid #2a2a2a; color:#ef4444">✗ ${p}</div>`).join('')}
+        </div>
+        <div class="output-card" style="border-color:#a855f7">
+          <h3>✨ Viral Rewrite</h3>
+          <div style="margin-bottom:16px">
+            <div style="color:#aaa; font-size:0.8rem; margin-bottom:6px">NEW TITLE/HOOK</div>
+            <div style="color:#fff; font-size:1rem; font-weight:bold">${a.rewritten_title}</div>
+          </div>
+          <div>
+            <div style="color:#aaa; font-size:0.8rem; margin-bottom:6px">NEW CAPTION</div>
+            <div style="color:#ddd; line-height:1.7">${a.rewritten_caption}</div>
+          </div>
+        </div>
+        <div class="output-card">
+          <h3>📅 Best Time to Post</h3>
+          <div style="display:flex; gap:16px; margin-top:8px">
+            <div style="background:#111; padding:16px; border-radius:10px; flex:1; text-align:center">
+              <div style="color:#a855f7; font-size:0.8rem">DAY</div>
+              <div style="color:#fff; font-weight:bold; margin-top:4px">${a.best_time.day}</div>
+            </div>
+            <div style="background:#111; padding:16px; border-radius:10px; flex:1; text-align:center">
+              <div style="color:#a855f7; font-size:0.8rem">TIME</div>
+              <div style="color:#fff; font-weight:bold; margin-top:4px">${a.best_time.time}</div>
+            </div>
+          </div>
+          <div style="color:#aaa; font-size:0.85rem; margin-top:10px">${a.best_time.reason}</div>
+        </div>
+        <div class="output-card">
+          <h3>🏷️ Trending Hashtags</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px">
+            ${a.hashtags.map(tag => `<span style="background:#1a1a2e; border:1px solid #a855f7; padding:4px 12px; border-radius:20px; color:#a855f7; font-size:0.85rem">#${tag.replace('#','')}</span>`).join('')}
+          </div>
+        </div>
+        <div class="output-card">
+          <h3>💡 Viral Tips</h3>
+          ${a.viral_tips.map((tip,i) => `<div style="padding:10px; margin-bottom:8px; background:#111; border-radius:8px; border-left:3px solid #f59e0b"><span style="color:#f59e0b; font-weight:bold">${i+1}.</span><span style="color:#ddd"> ${tip}</span></div>`).join('')}
+        </div>`;
+    } catch(err) { status.textContent = '❌ Error. Try again.'; }
+    btn.disabled = false;
+    btn.textContent = '🔥 Analyze & Make It Viral';
+  }
+
+  // ---- YOUTUBE REPURPOSE ----
+  async function youtubeRepurpose() {
+    const url = document.getElementById('yturl').value.trim();
+    const voiceText = document.getElementById('voice').value.trim();
+    const btn = document.getElementById('ytBtn');
+    const status = document.getElementById('status');
+    const results = document.getElementById('results');
+    if (!url) { status.textContent = '⚠️ Enter a YouTube URL'; return; }
+    const platforms = [...document.querySelectorAll('.platform-btn.selected')].map(b => b.dataset.value);
+    const voice_samples = voiceText ? voiceText.split('\n').filter(l => l.trim()) : [];
+    btn.disabled = true;
+    btn.textContent = '⏳ Transcribing... (1-2 mins)';
+    status.textContent = '🎥 Processing your YouTube video...';
+    results.innerHTML = '';
+    try {
+      const res = await fetch('/youtube', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, platforms, voice_samples })
+      });
+      const data = await res.json();
+      if (data.error) { status.textContent = '❌ ' + data.error; btn.disabled = false; btn.textContent = '🎥 Transcribe & Repurpose'; return; }
+      status.textContent = '✅ Done! Video repurposed!';
+      results.innerHTML = `
+        <div class="output-card">
+          <h3>🎥 Video Title</h3>
+          <p>${data.title}</p>
+        </div>
+        <div class="output-card">
+          <h3>📝 Transcript Preview</h3>
+          <p>${data.transcript}</p>
+        </div>`;
+      for (const [platform, text] of Object.entries(data.outputs)) {
+        results.innerHTML += `
+          <div class="output-card">
+            <h3>${platform.replace('_',' ')}</h3>
+            <p id="out-yt-${platform}">${text}</p>
+            <button class="copy-btn" onclick="copyYT('${platform}')">Copy</button>
+          </div>`;
+      }
+    } catch(err) { status.textContent = '❌ Error. Try again.'; }
+    btn.disabled = false;
+    btn.textContent = '🎥 Transcribe & Repurpose';
+  }
+
+  function copyYT(platform) {
+    navigator.clipboard.writeText(document.getElementById('out-yt-'+platform).textContent);
+  }
+
+  // ---- SCORE ----
   async function scoreContent() {
     const content = document.getElementById('content').value.trim();
     const btn = document.getElementById('scoreBtn');
     const status = document.getElementById('status');
     const results = document.getElementById('results');
-
     if (!content) { status.textContent = '⚠️ Enter your content first'; return; }
-
     btn.disabled = true;
     btn.textContent = '⏳ Scoring...';
     status.textContent = 'Analyzing your content...';
-
     try {
       const res = await fetch('/score', {
         method: 'POST',
@@ -283,7 +307,6 @@
       const data = await res.json();
       const s = data.score;
       status.textContent = '✅ Content scored!';
-
       results.innerHTML = `
         <div class="output-card">
           <h3>📊 Content Score</h3>
@@ -297,7 +320,6 @@
           </div>
         </div>`;
     } catch(err) { status.textContent = '❌ Error. Try again.'; }
-
     btn.disabled = false;
     btn.textContent = '📊 Score My Content';
   }
@@ -306,26 +328,24 @@
     const color = value >= 8 ? '#10b981' : value >= 6 ? '#f59e0b' : '#ef4444';
     return `
       <div class="score-item">
-        <div>
+        <div style="flex:1">
           <div class="score-label">${label}</div>
           <div class="score-bar"><div class="score-fill" style="width:${value*10}%; background:${color}"></div></div>
         </div>
-        <div class="score-value" style="color:${color}">${value}/10</div>
+        <div class="score-value" style="color:${color}; margin-left:12px">${value}/10</div>
       </div>`;
   }
 
+  // ---- HOOKS ----
   async function getHooks() {
     const content = document.getElementById('content').value.trim();
     const btn = document.getElementById('hookBtn');
     const status = document.getElementById('status');
     const results = document.getElementById('results');
-
     if (!content) { status.textContent = '⚠️ Enter your content first'; return; }
-
     btn.disabled = true;
     btn.textContent = '⏳ Generating hooks...';
     status.textContent = 'AI is crafting your hooks...';
-
     try {
       const res = await fetch('/hooks', {
         method: 'POST',
@@ -334,23 +354,18 @@
       });
       const data = await res.json();
       status.textContent = '✅ Here are your 5 hooks!';
-
       let html = '<div class="output-card"><h3>⚡ 5 Hooks</h3>';
       for (const [type, hook] of Object.entries(data.hooks)) {
-        html += `
-          <div class="hook-item">
-            <div class="hook-type">${type}</div>
-            <div class="hook-text">${hook}</div>
-          </div>`;
+        html += `<div class="hook-item"><div class="hook-type">${type}</div><div class="hook-text">${hook}</div></div>`;
       }
       html += '</div>';
       results.innerHTML = html;
     } catch(err) { status.textContent = '❌ Error. Try again.'; }
-
     btn.disabled = false;
     btn.textContent = '⚡ Generate 5 Hooks';
   }
 
+  // ---- REPURPOSE ----
   async function repurpose() {
     const content = document.getElementById('content').value.trim();
     const voiceText = document.getElementById('voice').value.trim();
@@ -358,21 +373,14 @@
     const btn = document.getElementById('mainBtn');
     const status = document.getElementById('status');
     const results = document.getElementById('results');
-
     if (!content) { status.textContent = '⚠️ Please enter your content first'; return; }
-
-    const platforms = [...document.querySelectorAll('.platform-btn.selected')]
-      .map(b => b.dataset.value);
-
+    const platforms = [...document.querySelectorAll('.platform-btn.selected')].map(b => b.dataset.value);
     if (platforms.length === 0) { status.textContent = '⚠️ Select at least one platform'; return; }
-
     const voice_samples = voiceText ? voiceText.split('\n').filter(l => l.trim()) : [];
-
     btn.disabled = true;
     btn.textContent = '⏳ Repurposing...';
     status.textContent = 'AI is working on your content...';
     results.innerHTML = '';
-
     try {
       const res = await fetch('/repurpose', {
         method: 'POST',
@@ -382,24 +390,21 @@
       const data = await res.json();
       status.textContent = '✅ Done!';
       results.innerHTML = '';
-
       for (const [platform, text] of Object.entries(data.outputs)) {
         results.innerHTML += `
           <div class="output-card">
-            <h3>${platform.replace('_', ' ')}</h3>
+            <h3>${platform.replace('_',' ')}</h3>
             <p id="out-${platform}">${text}</p>
             <button class="copy-btn" onclick="copy('${platform}')">Copy</button>
           </div>`;
       }
-    } catch (err) { status.textContent = '❌ Error. Is the server running?'; }
-
+    } catch(err) { status.textContent = '❌ Error. Is the server running?'; }
     btn.disabled = false;
     btn.textContent = '✦ Repurpose My Content';
   }
 
   function copy(platform) {
-    const text = document.getElementById('out-' + platform).textContent;
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(document.getElementById('out-'+platform).textContent);
   }
 </script>
 
