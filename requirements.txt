@@ -3,3 +3,5 @@ httpx
 requests
 gunicorn
 python-dotenv
+yt-dlp
+beautifulsoup4
